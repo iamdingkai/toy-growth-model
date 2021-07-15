@@ -1,0 +1,290 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "lmodern" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family rmdefault
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+toy growth model
+\end_layout
+
+\begin_layout Standard
+This is a simple neoclassic growth model.
+ Households solve the following problem:
+\begin_inset Formula 
+\[
+\max\sum_{t=0}^{\infty}\beta^{t}u\left(c_{t}\right)
+\]
+
+\end_inset
+
+subject to 
+\begin_inset Formula 
+\[
+c_{t}+k_{t+1}=f\left(k_{t}\right)+\left(1-\delta\right)k_{t}
+\]
+
+\end_inset
+
+The associated Bellman equation is 
+\begin_inset Formula 
+\[
+V\left(k\right)=\max u\left(c\right)+\beta V\left(k'\right)
+\]
+
+\end_inset
+
+subject to 
+\begin_inset Formula 
+\[
+c+k'=f\left(k\right)+\left(1-\delta\right)k
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Bellman equation is solved using a simple value function iteration.
+ 
+\end_layout
+
+\begin_layout Section
+toy growth model with transition
+\end_layout
+
+\begin_layout Standard
+Assume there is a sudden (unexpected) increase in productivity:
+\end_layout
+
+\begin_layout Itemize
+Old 
+\begin_inset Formula $f\left(k\right)=k^{\alpha}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+New 
+\begin_inset Formula $zf\left(k\right)=zk^{\alpha}$
+\end_inset
+
+ where 
+\begin_inset Formula $z>1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This code calculates the transition from the old stationary equilibrium
+ to the new stationary equilibrium.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Algorithm
+\series default
+:
+\end_layout
+
+\begin_layout Enumerate
+Solve for old and new stationary equilibrium capital levels 
+\begin_inset Formula $k_{old}^{*}$
+\end_inset
+
+ and 
+\begin_inset Formula $k_{new}^{*}$
+\end_inset
+
+.
+ For this growth model, this can be done by hand:
+\begin_inset Formula 
+\[
+\beta\left(1-\delta+f'\left(k_{old}^{*}\right)\right)=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\beta\left(1-\delta+zf'\left(k_{new}^{*}\right)\right)=1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Assume transition is completed in 
+\begin_inset Formula $T$
+\end_inset
+
+ periods, where 
+\begin_inset Formula $T$
+\end_inset
+
+ is a safely large number.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Calculate a transition path of 
+\begin_inset Formula $\left\{ k_{t}\right\} _{t=1}^{T}$
+\end_inset
+
+ using fsolve
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Initial guess can be linear interpolation between 
+\begin_inset Formula $k_{old}^{*}$
+\end_inset
+
+ and 
+\begin_inset Formula $k_{new}^{*}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Based on any guessed path, calculate the associated level of consumption
+ 
+\begin_inset Formula $c_{t}$
+\end_inset
+
+ from 
+\begin_inset Formula 
+\[
+c_{t}+k_{t+1}=zf\left(k_{t}\right)+\left(1-\delta\right)k_{t}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Calculate how much we are off from the Euler equations:
+\begin_inset Formula 
+\[
+u'\left(c_{t}\right)=\beta\left(1-\delta+zf'\left(k_{t}\right)\right)u'\left(c_{t+1}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $k_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $k_{T}$
+\end_inset
+
+ will be fixed at 
+\begin_inset Formula $k_{old}^{*},k_{new}^{*}$
+\end_inset
+
+, leaving 
+\begin_inset Formula $T-2$
+\end_inset
+
+ free variables.
+ We can use Euler equation in period 
+\begin_inset Formula $t=1,2,3,...,T-2$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_body
+\end_document
